@@ -148,3 +148,4 @@ Custom Examples
 References:
 1. https://howtodoinjava.com/gang-of-four-java-design-patterns/
 2. https://github.com/sdmg15/Java-design-patterns
+3. https://www.javatpoint.com/design-patterns-in-java
