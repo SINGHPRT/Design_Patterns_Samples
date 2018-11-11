@@ -1,4 +1,4 @@
-# Design_Patterns_Samples
+# Design Patterns Samples
 Implementation of DESIGN PATTERNS in Java
 
 
