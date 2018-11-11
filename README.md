@@ -105,7 +105,14 @@ Custom Examples
 
 
 # Factory
-This is most suitable where there is some complex object creation steps are involved. To ensure that these steps are centralized and not exposed to composing classes, factory pattern should be used.
+This is most suitable where there is some complex object creation steps are involved. To ensure that these steps are centralized and not exposed to composing classes, factory pattern should be used. We may not always know what kind of objects we want to create in advance.
+Some objects can be created only at execution time after a user requests so.
+
+Examples when you may use a factory method:
+
+A user may click on a certain button that creates an object.
+A user may create several new documents of different types.
+If a user starts a webbrowser, the browser does not know in advance how many tabs (where every tab is an object) will be opened.
 
 ## Examples:
 In-built Examples:
