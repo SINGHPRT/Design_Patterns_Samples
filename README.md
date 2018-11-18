@@ -122,74 +122,84 @@ If a user starts a webbrowser, the browser does not know in advance how many tab
 ## Examples:
 
 --> In-built Examples:
+
+java.util.Calendar, ResourceBundle and NumberFormat getInstance() methods uses Factory pattern.
+valueOf() method in wrapper classes like Boolean, Integer etc.
 java.sql.DriverManager#getConnection()
 java.net.URL#openConnection()
 java.lang.Class#newInstance()
 java.lang.Class#forName()
+java.util.logging.logger class
 
 
 --> Custom Examples
-
+Example 1:
+==========
 Calculate Electricity Bill : A Real World Example of Factory Method
 Step 1: Create a Plan abstract class.
 
-import java.io.*;      
-abstract class Plan{  
-         protected double rate;  
-         abstract void getRate();  
-   
-         public void calculateBill(int units){  
-              System.out.println(units*rate);  
-          }  
-}//end of Plan class.  
+    import java.io.*;      
+    abstract class Plan{  
+             protected double rate;  
+             abstract void getRate();  
+
+             public void calculateBill(int units){  
+                  System.out.println(units*rate);  
+              }  
+    }//end of Plan class.  
+
 Step 2: Create the concrete classes that extends Plan abstract class.
 
-class  DomesticPlan extends Plan{  
-        //@override  
-         public void getRate(){  
-             rate=3.50;              
-        }  
-   }//end of DomesticPlan class.  
-class  CommercialPlan extends Plan{  
-   //@override   
-    public void getRate(){   
-        rate=7.50;  
-   }   
-/end of CommercialPlan class.  
-class  InstitutionalPlan extends Plan{  
-   //@override  
-    public void getRate(){   
-        rate=5.50;  
-   }   
-/end of InstitutionalPlan class.  
+    class  DomesticPlan extends Plan{  
+            //@override  
+             public void getRate(){  
+                 rate=3.50;              
+            }  
+       }//end of DomesticPlan class.  
+    class  CommercialPlan extends Plan{  
+       //@override   
+        public void getRate(){   
+            rate=7.50;  
+       }   
+    /end of CommercialPlan class.  
+
+    class  InstitutionalPlan extends Plan{  
+       //@override  
+        public void getRate(){   
+            rate=5.50;  
+       }   
+    /end of InstitutionalPlan class.  
+
 Step 3: Create a GetPlanFactory to generate object of concrete classes based on given information..
 
-class GetPlanFactory{  
-      
-   //use getPlan method to get object of type Plan   
-       public Plan getPlan(String planType){  
-            if(planType == null){  
-             return null;  
+    class GetPlanFactory{  
+    
+     //use getPlan method to get object of type Plan   
+         public Plan getPlan(String planType){  
+              if(planType == null){  
+               return null;  
+              }  
+            if(planType.equalsIgnoreCase("DOMESTICPLAN")) {  
+                   return new DomesticPlan();  
+                 }   
+             else if(planType.equalsIgnoreCase("COMMERCIALPLAN")){  
+                  return new CommercialPlan();  
+              }   
+            else if(planType.equalsIgnoreCase("INSTITUTIONALPLAN")) {  
+                  return new InstitutionalPlan();  
             }  
-          if(planType.equalsIgnoreCase("DOMESTICPLAN")) {  
-                 return new DomesticPlan();  
-               }   
-           else if(planType.equalsIgnoreCase("COMMERCIALPLAN")){  
-                return new CommercialPlan();  
-            }   
-          else if(planType.equalsIgnoreCase("INSTITUTIONALPLAN")) {  
-                return new InstitutionalPlan();  
-          }  
-      return null;  
-   }  
-}//end of GetPlanFactory class.  
+        return null;  
+     }  
+  }//end of GetPlanFactory class.  
+
+
 Step 4: Generate Bill by using the GetPlanFactory to get the object of concrete classes by passing an information such as type of plan DOMESTICPLAN or COMMERCIALPLAN or INSTITUTIONALPLAN.
 
-import java.io.*;    
-class GenerateBill{  
-    public static void main(String args[])throws IOException{  
-      GetPlanFactory planFactory = new GetPlanFactory();  
-        
+    import java.io.*;    
+    class GenerateBill{  
+        public static void main(String args[])throws IOException{  
+          GetPlanFactory planFactory = new GetPlanFactory();  
+
       System.out.print("Enter the name of plan for which the bill will be generated: ");  
       BufferedReader br=new BufferedReader(new InputStreamReader(System.in));  
   
@@ -205,6 +215,137 @@ class GenerateBill{
            p.calculateBill(units);  
             }  
     }//end of GenerateBill class.  
+    
+    
+  Example 2:
+  ==========
+
+
+Abstract Super Class:
+----------------------
+
+    package com.journaldev.design.model;
+
+    public abstract class Computer {
+
+      public abstract String getRAM();
+      public abstract String getHDD();
+      public abstract String getCPU();
+
+      @Override
+      public String toString(){
+        return "RAM= "+this.getRAM()+", HDD="+this.getHDD()+", CPU="+this.getCPU();
+      }
+    }
+
+
+
+Sub Classes:
+------------
+
+    package com.journaldev.design.model;
+
+    public class PC extends Computer {
+
+      private String ram;
+      private String hdd;
+      private String cpu;
+
+      public PC(String ram, String hdd, String cpu){
+        this.ram=ram;
+        this.hdd=hdd;
+        this.cpu=cpu;
+      }
+      @Override
+      public String getRAM() {
+        return this.ram;
+      }
+
+      @Override
+      public String getHDD() {
+        return this.hdd;
+      }
+
+      @Override
+      public String getCPU() {
+        return this.cpu;
+      }
+
+    }
+
+
+    package com.journaldev.design.model;
+
+    public class Server extends Computer {
+
+      private String ram;
+      private String hdd;
+      private String cpu;
+
+      public Server(String ram, String hdd, String cpu){
+        this.ram=ram;
+        this.hdd=hdd;
+        this.cpu=cpu;
+      }
+      @Override
+      public String getRAM() {
+        return this.ram;
+      }
+
+      @Override
+      public String getHDD() {
+        return this.hdd;
+      }
+
+      @Override
+      public String getCPU() {
+        return this.cpu;
+      }
+
+    }
+
+
+
+Factor Class:
+---------------
+
+    package com.journaldev.design.factory;
+
+    import com.journaldev.design.model.Computer;
+    import com.journaldev.design.model.PC;
+    import com.journaldev.design.model.Server;
+
+    public class ComputerFactory {
+
+      public static Computer getComputer(String type, String ram, String hdd, String cpu){
+        if("PC".equalsIgnoreCase(type)) return new PC(ram, hdd, cpu);
+        else if("Server".equalsIgnoreCase(type)) return new Server(ram, hdd, cpu);
+
+        return null;
+      }
+    }
+
+
+Client program/composing Class:
+---------------------------------
+
+    package com.journaldev.design.test;
+
+    import com.journaldev.design.factory.ComputerFactory;
+    import com.journaldev.design.model.Computer;
+
+    public class TestFactory {
+
+      public static void main(String[] args) {
+        Computer pc = ComputerFactory.getComputer("pc","2 GB","500 GB","2.4 GHz");
+        Computer server = ComputerFactory.getComputer("server","16 GB","1 TB","2.9 GHz");
+        System.out.println("Factory PC Config::"+pc);
+        System.out.println("Factory Server Config::"+server);
+      }
+
+    }
+
+
 
 ## Advantages
 1. The creation of an object precludes its reuse without significant duplication of code.
