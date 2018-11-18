@@ -107,6 +107,11 @@ Custom Examples
 # Factory
 This is most suitable where there is some complex object creation steps are involved. To ensure that these steps are centralized and not exposed to composing classes, factory pattern should be used. We may not always know what kind of objects we want to create in advance.
 Some objects can be created only at execution time after a user requests so.
+A Factory Pattern or Factory Method Pattern says that just define an interface or abstract class for creating an object but let the subclasses decide which class to instantiate. In other words, subclasses are responsible to create the instance of the class.
+Factory pattern introduces loose coupling between classes which is the most important principle one should consider and apply while designing the application architecture. Loose coupling can be introduced in application architecture by programming against abstract entities rather than concrete implementations. This not only makes our architecture more flexible but also less fragile.
+The Factory Method Pattern is also known as Virtual Constructor.
+
+Factory pattern is most suitable where there is some complex object creation steps are involved. To ensure that these steps are centralized and not exposed to composing classes, factory pattern should be used.
 
 Examples when you may use a factory method:
 
@@ -115,13 +120,101 @@ A user may create several new documents of different types.
 If a user starts a webbrowser, the browser does not know in advance how many tabs (where every tab is an object) will be opened.
 
 ## Examples:
-In-built Examples:
 
-Custom Examples
+--> In-built Examples:
+java.sql.DriverManager#getConnection()
+java.net.URL#openConnection()
+java.lang.Class#newInstance()
+java.lang.Class#forName()
+
+
+--> Custom Examples
+
+Calculate Electricity Bill : A Real World Example of Factory Method
+Step 1: Create a Plan abstract class.
+
+import java.io.*;      
+abstract class Plan{  
+         protected double rate;  
+         abstract void getRate();  
+   
+         public void calculateBill(int units){  
+              System.out.println(units*rate);  
+          }  
+}//end of Plan class.  
+Step 2: Create the concrete classes that extends Plan abstract class.
+
+class  DomesticPlan extends Plan{  
+        //@override  
+         public void getRate(){  
+             rate=3.50;              
+        }  
+   }//end of DomesticPlan class.  
+class  CommercialPlan extends Plan{  
+   //@override   
+    public void getRate(){   
+        rate=7.50;  
+   }   
+/end of CommercialPlan class.  
+class  InstitutionalPlan extends Plan{  
+   //@override  
+    public void getRate(){   
+        rate=5.50;  
+   }   
+/end of InstitutionalPlan class.  
+Step 3: Create a GetPlanFactory to generate object of concrete classes based on given information..
+
+class GetPlanFactory{  
+      
+   //use getPlan method to get object of type Plan   
+       public Plan getPlan(String planType){  
+            if(planType == null){  
+             return null;  
+            }  
+          if(planType.equalsIgnoreCase("DOMESTICPLAN")) {  
+                 return new DomesticPlan();  
+               }   
+           else if(planType.equalsIgnoreCase("COMMERCIALPLAN")){  
+                return new CommercialPlan();  
+            }   
+          else if(planType.equalsIgnoreCase("INSTITUTIONALPLAN")) {  
+                return new InstitutionalPlan();  
+          }  
+      return null;  
+   }  
+}//end of GetPlanFactory class.  
+Step 4: Generate Bill by using the GetPlanFactory to get the object of concrete classes by passing an information such as type of plan DOMESTICPLAN or COMMERCIALPLAN or INSTITUTIONALPLAN.
+
+import java.io.*;    
+class GenerateBill{  
+    public static void main(String args[])throws IOException{  
+      GetPlanFactory planFactory = new GetPlanFactory();  
+        
+      System.out.print("Enter the name of plan for which the bill will be generated: ");  
+      BufferedReader br=new BufferedReader(new InputStreamReader(System.in));  
+  
+      String planName=br.readLine();  
+      System.out.print("Enter the number of units for bill will be calculated: ");  
+      int units=Integer.parseInt(br.readLine());  
+  
+      Plan p = planFactory.getPlan(planName);  
+      //call getRate() method and calculateBill()method of DomesticPaln.  
+  
+       System.out.print("Bill amount for "+planName+" of  "+units+" units is: ");  
+           p.getRate();  
+           p.calculateBill(units);  
+            }  
+    }//end of GenerateBill class.  
 
 ## Advantages
+1. The creation of an object precludes its reuse without significant duplication of code.
+2. The creation of an object requires access to information or resources that should not be contained within the composing class.
+3. The lifetime management of the generated objects must be centralized to ensure a consistent behavior within the application.
+4. Hence promotes Loose coupling.
 
 ## Disadvantages
+
+
 
 # Abstract factory
 Whenever you need another level of abstraction over a group of factories, you should consider using abstract factory pattern.
@@ -156,3 +249,4 @@ References:
 1. https://howtodoinjava.com/gang-of-four-java-design-patterns/
 2. https://github.com/sdmg15/Java-design-patterns
 3. https://www.javatpoint.com/design-patterns-in-java
+
