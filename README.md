@@ -351,7 +351,10 @@ Client program/composing Class:
 1. The creation of an object precludes its reuse without significant duplication of code.
 2. The creation of an object requires access to information or resources that should not be contained within the composing class.
 3. The lifetime management of the generated objects must be centralized to ensure a consistent behavior within the application.
-4. Hence promotes Loose coupling.
+4. Factory design pattern provides approach to code for interface rather than implementation.
+5. Factory pattern removes the instantiation of actual implementation classes from client code. Factory pattern makes our code more robust, less coupled and easy to extend. For example, we can easily change PC class implementation because client program is unaware of this.
+6. Factory pattern provides abstraction between implementation and client classes through inheritance.
+7. Hence promotes Loose coupling.
 
 ## Disadvantages
 
@@ -390,4 +393,4 @@ References:
 1. https://howtodoinjava.com/gang-of-four-java-design-patterns/
 2. https://github.com/sdmg15/Java-design-patterns
 3. https://www.javatpoint.com/design-patterns-in-java
-
+4. https://www.journaldev.com/1392/factory-design-pattern-in-java
