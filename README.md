@@ -45,17 +45,25 @@ When an application wants to have one and only one instance of any class per JVM
 
 ## How to create Singleton:
 To implement Singleton pattern, there are really many approaches but all of them have following common concepts:
+
   A private constructor to avoid instantiation of the class,
+
   A private static variable from the same class that's the only instance of the class.
+
   public static method that returns the instance of the class, this is the global access point for the outer world to get the instance of the class.
+  
 
 ## Examples:
 In-built Examples:
+
   java.lang.Runtime.getRuntime(): This method gives Runtime class that has only one instance in a JVM.
+
   java.lang.System.getSecurityManager(): This method returns a SecurityManager for the current platform. java.awt.Desktop.getDesktop()
 
 Custom Examples
+
   Connection Pool class
+  
   Persistence Manager class
 
 
@@ -69,9 +77,13 @@ This is an alternative way to construct complex objects and should be used only 
 
 ## Examples:
 In-built JDK Implementation:
+
   All implementations of java.lang.Appendable are infact good example of use of Builder pattern in java. e.g.
+  
   java.lang.StringBuilder#append() [Unsynchronized class]
+
   java.lang.StringBuffer#append() [Synchronized class]
+
   java.nio.ByteBuffer#put() (also on CharBuffer, ShortBuffer, IntBuffer, LongBuffer, FloatBuffer and DoubleBuffer)
 
 
@@ -80,6 +92,7 @@ Custom Examples
 ## Advantages
 Undoubtedly, the number of lines of code increase at least to double in builder pattern, but the effort pays off in terms of design flexibility and much more readable code. The parameters to the constructor are reduced and are provided in highly readable method calls.
 Builder pattern also helps minimizing the number of parameters in constructor and thus there is no need to pass in null for optional parameters to the constructor.
+
 Another advantage is that Object is always instantiated in a complete state rather than sitting in an incomplete state until the developer calls (if ever calls) the appropriate “setter” method to set additional fields.
 
 And I finally I can build immutable objects without much complex logic in object building process.
@@ -124,11 +137,17 @@ If a user starts a webbrowser, the browser does not know in advance how many tab
 --> In-built Examples:
 
 java.util.Calendar, ResourceBundle and NumberFormat getInstance() methods uses Factory pattern.
+
 valueOf() method in wrapper classes like Boolean, Integer etc.
+
 java.sql.DriverManager#getConnection()
+
 java.net.URL#openConnection()
+
 java.lang.Class#newInstance()
+
 java.lang.Class#forName()
+
 java.util.logging.logger class
 
 
