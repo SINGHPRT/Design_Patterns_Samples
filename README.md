@@ -52,6 +52,13 @@ To implement Singleton pattern, there are really many approaches but all of them
 
   public static method that returns the instance of the class, this is the global access point for the outer world to get the instance of the class.
   
+ * Enum as Singleton: This type of implementation employs the use of enum. Enum, as written in the java docs, provided implicit support for thread safety and only one instance is guaranteed. Java enum singleton is also a good way to have singleton with minimal effort.
+	  public enum EnumSingleton {
+	    INSTANCE;
+	    public void someMethod(String param) {
+		// some class member
+	    }
+	}
 
 ## Examples:
 In-built Examples:
@@ -66,78 +73,62 @@ Custom Examples
   Connection Pool class
   
   Persistence Manager class
-  --------------------------
   
-  Signleton Class 1
-  -------------------
   
-    public final class PMF {
-      private static final PersistenceManagerFactory pmfInstance =
-        JDOHelper.getPersistenceManagerFactory("transactions-optional");
 
-      private PMF() {}
-
-      public static PersistenceManagerFactory get() {		
-        return pmfInstance;
-      }
-  }
+  Singleton Class 
+  -----------------
   
-  Singleton Class 2(uses Singleton Class 1)
-  -----------------------------------------
-  
-  public class WPUserDao {
+	  public final class LazySingleton {
+	    private static volatile LazySingleton instance = null;
 
-    private static final Logger log = Logger.getLogger(WPUserDao.class.getName());
-    private static final WPUserDao wpUserDao = new WPUserDao();
+	    // private constructor
+	    private LazySingleton() {
+	    }
 
-    // private constructor
-    private WPUserDao() {
-    }
-
-    public static WPUserDao getInstance() {
-      return wpUserDao;
-    }
-    
-    public WPUser findById(Long id) {
-      PersistenceManager pm = PMF.get().getPersistenceManager();
-      try {
-        Key k = KeyFactory.createKey(WPUser.class.getSimpleName(), id);
-        WPUser wpUser = pm.getObjectById(WPUser.class, k);
-        return pm.detachCopy(wpUser);
-      } catch (Exception e) {
-        log.severe("Exception occurred due to error:"+e.getMessage());
-        //e.printStackTrace();
-        return null;
-      } finally {
-        pm.close();
-      }
+	    public static LazySingleton getInstance() {
+		if (instance == null) {
+		    synchronized (LazySingleton.class) {
+			instance = new LazySingleton();
+		    }
+		}
+		return instance;
+	    }
 	}
+  
+	  public class WPUserDao {
 
-    public void insert(WPUser wpUser) {
-      PersistenceManager pm = PMF.get().getPersistenceManager();
-      wpUser.setCreatedDate(new Date());
-      wpUser.setLastAccessedDate(new Date());
-      try {
-        pm.makePersistent(wpUser);
-      } finally {
-        pm.close();
-      }
-    }
-  }
+	    private static final Logger log = Logger.getLogger(WPUserDao.class.getName());
+	    private static final WPUserDao wpUserDao = new WPUserDao();
+
+	    // private constructor
+	    private WPUserDao() {
+	    }
+
+	    public static WPUserDao getInstance() {
+	      return wpUserDao;
+	    }
+
+	    public WPUser findById(Long id) {
+	      //code here...
+	     }
+	  }
   
   
   Client Program Code
   -------------------
   
-		WPUser primaryMember = WPUserDao.getInstance().findById(Long.parseLong(userId));
+	WPUser primaryMember = WPUserDao.getInstance().findById(Long.parseLong(userId));
 	
   
 
 
 ## Advantages
+Merit of this pattern is to have minimal instance creation process which is much costly than cloning process.
+One instance per Application instance or JVM.
 
 ## Disadvantages
-
+can't think of any.
 
 # Builder
 This is an alternative way to construct complex objects and should be used only when you want to build different immutable objects using same object building process.
