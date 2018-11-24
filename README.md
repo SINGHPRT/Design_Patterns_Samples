@@ -60,6 +60,7 @@ In-built Examples:
 
   java.lang.System.getSecurityManager(): This method returns a SecurityManager for the current platform. java.awt.Desktop.getDesktop()
 
+
 Custom Examples
 
   Connection Pool class
@@ -88,6 +89,180 @@ In-built JDK Implementation:
 
 
 Custom Examples
+
+Builder Class:
+==============
+
+
+      public class Document implements Serializable {
+
+        private static final long serialVersionUID = 309382038422977263L;
+
+        private final Map<String, List<Field>> fieldMap;
+        private final List<Field> fields;
+
+
+        /**
+         * A builder of documents. This is not thread-safe.
+         */
+        public static class Builder {
+          private final Map<String, List<Field>> fieldMap = new HashMap<>();
+          private final List<Field> fields = new ArrayList<>();
+
+          /**
+           * Constructs a builder for a document.
+           */
+          protected Builder() {
+
+          }
+
+          /**
+           * Adds the field builder to the document builder. Allows multiple
+           * fields with the same name.
+           *
+           * @param builder the builder of the field to add
+           * @return this document builder
+           */
+          public Builder addField(Field.Builder builder) {
+            return addField(builder.build());
+          }
+
+          /**
+           * Adds the field to the builder. Allows multiple fields with the same name, except
+           * that documents may only have one date and one number field for a name.
+           *
+           * @param field the field to add
+           * @return this builder
+           * @throws IllegalArgumentException if the field is invalid
+           */
+          public Builder addField(Field field) {
+            Field.FieldType type = field.getType();
+            if (type == Field.FieldType.DATE || type == Field.FieldType.NUMBER
+                || type == Field.FieldType.VECTOR) {
+              if (!noRepeatNames.put(field.getName(), type)) {
+                if (type == Field.FieldType.VECTOR) {
+                  throw new IllegalArgumentException("Vector fields cannot be repeated.");
+                } else {
+                  throw new IllegalArgumentException("Number and date fields cannot be repeated.");
+                }
+              }
+            }
+
+            fields.add(field);
+            List<Field> fieldsForName = fieldMap.get(field.getName());
+            if (fieldsForName == null) {
+              fieldsForName = new ArrayList<>();
+              fieldMap.put(field.getName(), fieldsForName);
+            }
+            fieldsForName.add(field);
+            return this;
+          }
+
+
+          /**
+           * Builds a valid document. The builder must have set a valid document
+           * id, and have a non-empty set of valid fields.
+           *
+           * @return the document built by this builder
+           * @throws IllegalArgumentException if the document built is not valid
+           */
+          public Document build() {
+            return new Document(this);
+          }
+        }
+
+
+        /**
+         * Constructs a document with the given builder.
+         *
+         * @param builder the builder capable of building a document
+         */
+        protected Document(Builder builder) {
+          fieldMap = new HashMap<>(builder.fieldMap);
+          fields = Collections.unmodifiableList(builder.fields);
+        }
+
+        /**
+         * Returns an iterable of {@link Field} in the document
+         */
+        public Iterable<Field> getFields() {
+          return fields;
+        }
+
+        /**
+         * Returns an iterable of all fields with the given name.
+         *
+         * @param name the name of the field whose values are to be returned
+         * @return an unmodifiable {@link Iterable} of {@link Field} with the given name
+         * or {@code null}
+         */
+        public Iterable<Field> getFields(String name) {
+          List<Field> fieldsForName = fieldMap.get(name);
+          if (fieldsForName == null) {
+            return null;
+          }
+          return Collections.unmodifiableList(fieldsForName);
+        }
+
+        /**
+         * Creates a new document builder. You must use this method to obtain a new
+         * builder. The returned builder must be used to specify all properties of
+         * the document. To obtain the document call the {@link Builder#build()}
+         * method on the returned builder.
+         *
+         * @return a builder which constructs a document object
+         */
+        public static Builder newBuilder() {
+          return new Builder();
+        }
+
+        /**
+         * Creates a new document builder from the given document. All document
+         * properties are copied to the returned builder.
+         *
+         * @param document the document protocol buffer to build a document object
+         * from
+         * @return the document builder initialized from a document protocol buffer
+         */
+        static Builder newBuilder(DocumentPb.Document document) {
+          Document.Builder docBuilder = Document.newBuilder().setId(document.getId());
+
+          for (DocumentPb.Field field : document.getFieldList()) {
+            docBuilder.addField(Field.newBuilder(field));
+          }
+
+          return docBuilder;
+        }
+
+
+
+      }
+
+
+
+
+
+
+Client Program:
+===============
+
+      Document document = Document.newBuilder().setId("document id")
+              .setLocale(Locale.UK)
+              .addField(Field.newBuilder()
+                  .setName("subject")
+                  .setText("going for dinner"))
+              .addField(Field.newBuilder()
+                  .setName("body")
+                  .setHTML("&lt;html&gt;I found a restaurant.&lt;/html&gt;"))
+              .addField(Field.newBuilder()
+                  .setName("signature")
+                  .setText("ten post jest przeznaczony dla odbiorcy")
+                  .setLocale(new Locale("pl")))
+              .addFacet(Facet.withAtom("tag", "food"))
+              .addFacet(Facet.withNumber("priority", 5.0))
+              .build();
+
+ 
 
 ## Advantages
 Undoubtedly, the number of lines of code increase at least to double in builder pattern, but the effort pays off in terms of design flexibility and much more readable code. The parameters to the constructor are reduced and are provided in highly readable method calls.
